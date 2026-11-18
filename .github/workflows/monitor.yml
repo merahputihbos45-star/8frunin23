@@ -51,6 +51,11 @@ jobs:
           # Tangkap sinyal pembatalan manual (Cancel run di GitHub UI)
           trap 'echo -e "\n🛑 [$(date -u "+%Y-%m-%d %H:%M:%S UTC")] Workflow dihentikan / di-cancel secara manual."; exit 0' SIGINT SIGTERM
 
+          # Ambil Public IP hanya 1 kali di awal run
+          echo -n "🌐 Mengambil Public IP (curl icanhazip - 1x per run): "
+          PUBLIC_IP=$(curl -s -m 10 https://icanhazip.com || echo "Timeout/Gagal")
+          echo "$PUBLIC_IP"
+
           ITERATION=1
           while [ $(date +%s) -lt $END_TIME ]; do
             CURRENT_TIME=$(date +%s)
@@ -63,10 +68,8 @@ jobs:
             echo "📌 [Iterasi #$ITERATION] $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo "⏳ Sisa waktu: ${REMAINING_MIN} menit ${REMAINING_SEC} detik"
             
-            # Cek IP Publik menggunakan icanhazip
-            echo -n "🌐 Public IP (icanhazip): "
-            IP=$(curl -s -m 10 https://icanhazip.com || echo "Timeout/Gagal")
-            echo "$IP"
+            # Tampilkan IP (hasil curl dari awal run, tanpa memanggil curl berulang)
+            echo "🌐 Public IP: $PUBLIC_IP"
 
             # Cek Status CPU & Load Average
             echo "⚙️  CPU & Load Average:"
