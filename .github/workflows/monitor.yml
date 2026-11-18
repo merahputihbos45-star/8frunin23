@@ -22,6 +22,13 @@ jobs:
       - name: Checkout repository (opsional)
         uses: actions/checkout@v4
 
+      - name: Informasi Spesifikasi CPU (lscpu)
+        run: |
+          echo "=========================================================="
+          echo "💻 SPESIFIKASI HARDWARE & CPU RUNNER (lscpu)"
+          echo "=========================================================="
+          lscpu
+
       - name: Jalankan Loop Monitor CPU & IP
         run: |
           set -e
